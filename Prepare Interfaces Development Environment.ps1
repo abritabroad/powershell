@@ -13,25 +13,29 @@ function global:RestoreDB ([string] $newDBName, [string] $backupFilePath)
     Invoke-Sqlcmd -ServerInstance $sqlInstance -Query $dbCommand
 }
 
+$frameworkPath = "C:\_c\Build\WSO.Interfaces\Server\Framework\"
+$databaseBackupPath = "C:\_c\Enterprise\Data\Databases\US\"
+$wsoConfigurationPath = "C:\WSO Configuration\"
+
 "Rename Config folder...`r`n"
 
-$oldConfigFolderName = "C:\_c\Build\WSO.Interfaces\Server\Framework\Configs"
-$newConfigFolderName = "C:\_c\Build\WSO.Interfaces\Server\Framework\Config"
+$oldConfigFolderName = $frameworkPath + "Configs"
+$newConfigFolderName = $frameworkPath + "Config"
 
 Rename-Item -Path $oldConfigFolderName -NewName $newConfigFolderName
 
 "Copy license file...`r`n"
 
-$oldLicenseFileName = "C:\_c\Build\WSO.Interfaces\Server\Framework\Config\Internal\Interfaces.license"
-$newLicenseFileName = "C:\_c\Build\WSO.Interfaces\Server\Framework\Interfaces.license"
+$oldLicenseFileName = $newConfigFolderName + "\Internal\Interfaces.license"
+$newLicenseFileName = $frameworkPath + "Interfaces.license"
 
 Copy-Item -Path $oldLicenseFileName -Destination $newLicenseFileName
 
 "Modifying config file...`r`n"
 
-$configFileName = "C:\_c\Build\WSO.Interfaces\Server\Framework\Interfaces.config"
+$configFileName = $frameworkPath + "Interfaces.config"
 $oldServerConfigFilePath = "SERVER_CONFIG_FILE_PATH"
-$newServerConfigFilePath = "C:\WSO Configuration\Server.config"
+$newServerConfigFilePath = $wsoConfigurationPath + "Server.config"
 
 (Get-Content $configFileName).replace($oldServerConfigFilePath, $newServerConfigFilePath) | Set-Content $configFileName
 
@@ -40,7 +44,7 @@ $newServerConfigFilePath = "C:\WSO Configuration\Server.config"
 $sqlInstance = "DAL2DEVPC354"
 
 $databaseName = "WSOMessages_US"
-$databaseBackupFileName = "C:\_c\Enterprise\Data\Databases\US\WSOMessages_US.bak"
+$databaseBackupFileName = $databaseBackupPath + "WSOMessages_US.bak"
 
 RestoreDB $databaseName $databaseBackupFileName
 
