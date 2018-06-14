@@ -16,4 +16,6 @@ function global:RestoreDB ([string] $newDBName, [string] $backupFilePath)
     Invoke-Sqlcmd -Query $dbCommand
 }
 
+function ngm { Invoke-Expression 'npm run mock' }
+
 #net use Z: "\\markit\dfs\DAL\Users\steven.fisher"
